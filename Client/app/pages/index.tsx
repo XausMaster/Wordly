@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react"
 
 export default function HomePage() {
-  const users_url = 'http://127.0.0.1:5000/users'
+  const users_url: string = 'http://127.0.0.1:5000/users'
   const [users, setUsers] = useState('')
 
   useEffect(() => {
+    console.log("Fetching data...");
     const fetchData = async () => {
       try {
         const response = await fetch(users_url)
