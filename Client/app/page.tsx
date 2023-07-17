@@ -1,6 +1,17 @@
-export default function HomePage() {
+'use client'
+import 'tailwindcss/tailwind.css'
+import Head from 'next/head'
+import HomePage from './pages'
+
+export default function App() {
   return (
     <>
+      <Head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet" />
+      </Head>
+      <div className="w-screen h-screen bg-gray-200">
         <header>      
             <nav className="bg-white border-gray-200 dark:bg-gray-900">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -66,18 +77,8 @@ export default function HomePage() {
                 </div>
             </nav>
         </header>
-
-        {/* ------ */}
-
-        <main>
-            <h1>This Is Main Page !</h1>
-        </main>
-
-        {/* ------- */}
-
-        <footer>
-
-        </footer>
+        <HomePage />
+      </div>
     </>
   )
 }

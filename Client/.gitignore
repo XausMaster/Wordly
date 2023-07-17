@@ -8,9 +8,15 @@
 # testing
 /coverage
 
-# next.js
+# next.js 
 /.next/
 /out/
+
+# Server
+/Server/
+
+# DataBase
+/instance/
 
 # production
 /build
