@@ -1,67 +1,96 @@
 'use client'
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+
+interface UserData {
+  id: number;
+  date: string;
+  nickname: string;
+  rank: number;
+  level: string;
+  win: number;
+  lose: number;
+}
 
 export default function HomePage() {
-  const users_url: string = 'http://127.0.0.1:5000/users'
-  const [users, setUsers] = useState('')
-
-  const [word, setWord] = useState('')
-  const [difficult, setDifficult] = useState('')
-  const [lcount, setLcount] = useState('')
+  const users_url: string = 'http://127.0.0.1:5000/users';
+  const [users_json, setUsers] = useState<UserData[]>([]);
 
   useEffect(() => {
     console.log("Fetching data...");
     const fetchData = async () => {
       try {
-        const response = await fetch(users_url)
+        const response = await fetch(users_url);
         if (!response.ok) {
-          throw new Error('Failed to fetch')
+          throw new Error('Failed to fetch');
         }
-        const data = await response.json()
-        console.log(data)
-        setUsers(data)
+        const data = await response.json();
+        console.log(data);
+        setUsers(data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const word_obj = { word, difficult, letter_count: parseInt(lcount) };
-  
-    fetch('http://127.0.0.1:5000/addWord', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(word_obj)
+  const handleDeleteUser = (id: number) => {
+    fetch(`http://127.0.0.1:5000/deleteUser/${id}`, {
+      method: 'DELETE',
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to add word');
+          throw new Error('Failed to delete user');
         }
-        console.log('I sent a new word');
-        // You can add any further logic or state updates here if needed
+        console.log(`User with ID ${id} has been deleted`);
+        // Remove the deleted user from the state
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
       })
       .catch((error) => {
         console.error(error);
         // Handle error, e.g., display an error message to the user
       });
   };
-  
 
   return (
     <>
       <main className="p-5">
-        <form onSubmit={handleSubmit} method="post">
-          <input onChange={(e) => {setWord(e.target.value)}} type="text" name="word" placeholder="Word" />
-          <input onChange={(e) => {setDifficult(e.target.value)}} type="text" name="difficult" placeholder="Difficult" />
-          <input onChange={(e) => {setLcount(e.target.value)}} type="text" name="letter_count" placeholder="Letter Count" />
-          <input type="submit" value="Send" />
-        </form>
+        <table className="table-auto bg-gray-300 rounded">
+          <thead className="bg-gray-700">
+            <tr>
+              <th className="px-5">ID</th>
+              <th className="px-5">Date</th>
+              <th className="px-5">Nickname</th>
+              <th className="px-5">Rank</th>
+              <th className="px-5">Level</th>
+              <th className="px-5">Wins</th>
+              <th className="px-5">Loses</th>
+              <th className="px-5">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users_json.map((user: UserData) => (
+              <tr key={user.id}>
+                <td className="px-5">{user.id}</td>
+                <td className="px-5">{user.date}</td>
+                <td className="px-5">{user.nickname}</td>
+                <td className="px-5">{user.rank}</td>
+                <td className="px-5">{user.level}</td>
+                <td className="px-5">{user.win}</td>
+                <td className="px-5">{user.lose}</td>
+                <td>
+                  <button
+                    onClick={() => handleDeleteUser(user.id)}
+                    className="px-5 bg-red-200 rounded hover:bg-red-300 transition-all"
+                  >
+                    Delete User
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </main>
-
       <footer></footer>
     </>
-  )
+  );
 }
